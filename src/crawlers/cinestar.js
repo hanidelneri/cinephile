@@ -27,7 +27,23 @@ const crawler = new PlaywrightCrawler({
       if ((await castLocator.count()) > 0) {
         cast = await castLocator.first().textContent();
       }
-      console.log(cast);
+
+      //METADATA
+      const metadatas = {};
+      const keys = await Promise.all(
+        (await page.locator(".metas b").all()).map(async (locator) => await locator.textContent())
+      );
+      const values = await Promise.all(
+        (
+          await page.locator(".metas span").all()
+        ).map(async (locator) => await locator.textContent())
+      );
+
+      keys.forEach((key, index) => {
+        metadatas[key] = values[index];
+      });
+
+      console.log(metadatas);
     }
   },
 });
