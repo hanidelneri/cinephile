@@ -5,6 +5,7 @@ const SHOW_TILE_LINK_SELECTOR = MOVIE_GUIDE_SELECTOR + " .ShowTile a:first-child
 
 const MOVIE_HEADER_SELECTOR = ".movie-header";
 const MOVIE_DETAIL_PAGE = "MOVIE_DETAIL_PAGE";
+const VERSIONS = ["ov", "omeu", "omu", "df"];
 
 const crawler = new PlaywrightCrawler({
   async requestHandler({ request, page, enqueueLinks, log, pushData }) {
@@ -43,7 +44,60 @@ const crawler = new PlaywrightCrawler({
         metadatas[key] = values[index];
       });
 
-      console.log(metadatas);
+      //SHOWTIME
+      const showTimes = await Promise.all(
+        (
+          await page.locator(".ShowtimeBoxView .ShowtimeDayView").all()
+        ).map(async (locator) => {
+          const day = await locator.locator(".day").first().textContent();
+
+          let when = [];
+          const showTimeGroupViewLocator = await locator.locator(".ShowtimeGroupView");
+          if ((await showTimeGroupViewLocator.count()) > 0) {
+            when = await Promise.all(
+              (
+                await showTimeGroupViewLocator.all()
+              ).map(async (locator) => {
+                const attributes = (
+                  await locator.locator(".attributes img").first().getAttribute("alt")
+                ).split(",");
+
+                const screenType = attributes[0];
+                const versions = VERSIONS.filter((version) => {
+                  return (
+                    attributes.findIndex((attribute) => attribute.toLowerCase().includes(version)) >
+                    -1
+                  );
+                });
+
+                if (
+                  attributes.findIndex(
+                    (attribute) => attribute.toLowerCase().trim() === "deutsch"
+                  ) > -1
+                ) {
+                  versions.push("df");
+                }
+
+                const times = await Promise.all(
+                  (
+                    await locator.locator(".times").locator("time").all()
+                  ).map(async (locator) => {
+                    return { time: await locator.getAttribute("datetime"), versions, screenType };
+                  })
+                );
+                return times;
+              })
+            );
+          }
+
+          console.log(when);
+
+          return {
+            day,
+            when,
+          };
+        })
+      );
     }
   },
 });
