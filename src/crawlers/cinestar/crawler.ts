@@ -17,9 +17,15 @@ const crawler = new PlaywrightCrawler({
       });
     } else {
       const movie = await new CinestarScraper(page).scrape();
-      console.log(movie);
+      pushData(movie, movie.title);
     }
   },
 });
 
-await crawler.run(["https://www.cinestar.de/kino-berlin-treptower-park"]);
+await crawler.run([
+  "https://www.cinestar.de/kino-berlin-treptower-park",
+  "https://www.cinestar.de/kino-berlin-cubix-am-alexanderplatz",
+  "https://www.cinestar.de/kino-berlin-hellersdorf",
+  "https://www.cinestar.de/berlin-kino-in-der-kulturbrauerei",
+  "https://www.cinestar.de/kino-berlin-tegel",
+]);

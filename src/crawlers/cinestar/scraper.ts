@@ -3,6 +3,10 @@ import { movie, dictionary, showTime } from "../movie.js";
 
 const URL_TO_THEATER_MAP: dictionary = {
   "kino-berlin-treptower-park": "CineStar Berlin-Treptow",
+  "kino-berlin-cubix-am-alexanderplatz": "CineStar Cubix",
+  "kino-berlin-hellersdorf": "CineStar Berlin-Hellersdorf",
+  "berlin-kino-in-der-kulturbrauerei": "Kino in der Kulturbrauerei",
+  "kino-berlin-tegel": "CineStar Berlin-Tegel",
 };
 
 const VERSIONS = ["ov", "omeu", "omu", "df"];
