@@ -14,4 +14,5 @@ export type showTime = {
   theater: string;
   screenType: string;
   versions: string[];
+  time: string;
 };

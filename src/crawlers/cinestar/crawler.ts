@@ -5,7 +5,6 @@ const MOVIE_GUIDE_SELECTOR = ".MovieGuideView";
 const SHOW_TILE_LINK_SELECTOR = MOVIE_GUIDE_SELECTOR + " .ShowTile a:first-child";
 
 const MOVIE_DETAIL_PAGE = "MOVIE_DETAIL_PAGE";
-const VERSIONS = ["ov", "omeu", "omu", "df"];
 
 const crawler = new PlaywrightCrawler({
   async requestHandler({ request, page, enqueueLinks, log, pushData }) {

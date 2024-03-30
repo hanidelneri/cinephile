@@ -110,8 +110,9 @@ export class CinestarScraper {
       (
         await locator.locator(".times").locator("time").all()
       ).map(async (locator) => {
+        const time = await locator.getAttribute("datetime");
         return {
-          time: await locator.getAttribute("datetime"),
+          time: time ? time : "",
           theater: this.getTheater(),
           screenType,
           versions,
