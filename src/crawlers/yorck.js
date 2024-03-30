@@ -85,8 +85,7 @@ const crawler = new PlaywrightCrawler({
         label: MOVIE_DETAIL_PAGE,
       });
     }
-  },
-  maxRequestsPerCrawl: 100,
+  }
 });
 
 await crawler.run(["https://www.yorck.de/en/films"]);
