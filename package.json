@@ -8,8 +8,8 @@
         "playwright": "*"
     },
     "scripts": {
-        "crawl:yorck": "node src/crawlers/yorck.js",
-        "crawl:cinestar": "node src/crawlers/cinestar.js",
+        "crawl:yorck": "npx tsc && node src/crawlers/yorck.js",
+        "crawl:cinestar": "npx tsc && node src/crawlers/cinestar.js",
         "test": "echo \"Error: oops, the actor has no tests yet, sad!\" && exit 1"
     },
     "author": "Hanie",
