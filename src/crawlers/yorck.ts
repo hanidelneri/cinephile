@@ -27,7 +27,9 @@ const crawler = new PlaywrightCrawler({
       const description = await page.locator(DESCRIPTION_NODE_SELECTOR).first().textContent();
 
       //METADATA
-      const metadata = {};
+      const metadata = {} as {
+        [key: string]: string;
+      };
       const keys = await page.locator(METADATA_NODE_SELECTOR).first().locator("h5").allInnerTexts();
       const values = await page
         .locator(METADATA_NODE_SELECTOR)
@@ -77,7 +79,7 @@ const crawler = new PlaywrightCrawler({
         })
       );
 
-      pushData({ ...metadata, description, showTimes }, title);
+      pushData({ ...metadata, description, showTimes }, title ? title : "");
     } else {
       await page.waitForSelector(MOVIE_DETAIL_PAGE_LINK_SELECTOR);
       await enqueueLinks({
@@ -85,7 +87,7 @@ const crawler = new PlaywrightCrawler({
         label: MOVIE_DETAIL_PAGE,
       });
     }
-  }
+  },
 });
 
 await crawler.run(["https://www.yorck.de/en/films"]);

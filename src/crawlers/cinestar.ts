@@ -23,16 +23,23 @@ const crawler = new PlaywrightCrawler({
       const description = await page.locator("[itemprop=description]").first().allInnerTexts();
 
       //CAST
-      let cast = "";
+      let cast;
       const castLocator = await page.locator(".artists span");
       if ((await castLocator.count()) > 0) {
         cast = await castLocator.first().textContent();
       }
 
       //METADATA
-      const metadatas = {};
+      const metadatas = {} as {
+        [key: string]: any;
+      };
       const keys = await Promise.all(
-        (await page.locator(".metas b").all()).map(async (locator) => await locator.textContent())
+        (
+          await page.locator(".metas b").all()
+        ).map(async (locator): Promise<string> => {
+          const key = await locator.textContent();
+          return key ? key : "";
+        })
       );
       const values = await Promise.all(
         (
@@ -51,7 +58,7 @@ const crawler = new PlaywrightCrawler({
         ).map(async (locator) => {
           const day = await locator.locator(".day").first().textContent();
 
-          let when = [];
+          let when: any = [];
           const showTimeGroupViewLocator = await locator.locator(".ShowtimeGroupView");
           if ((await showTimeGroupViewLocator.count()) > 0) {
             when = await Promise.all(
@@ -60,22 +67,27 @@ const crawler = new PlaywrightCrawler({
               ).map(async (locator) => {
                 const attributes = (
                   await locator.locator(".attributes img").first().getAttribute("alt")
-                ).split(",");
+                )?.split(",");
 
-                const screenType = attributes[0];
-                const versions = VERSIONS.filter((version) => {
-                  return (
-                    attributes.findIndex((attribute) => attribute.toLowerCase().includes(version)) >
-                    -1
-                  );
-                });
+                let screenType = "";
+                let versions: any = [];
+                if (attributes) {
+                  screenType = attributes[0];
+                  versions = VERSIONS.filter((version) => {
+                    return (
+                      attributes.findIndex((attribute) =>
+                        attribute.toLowerCase().includes(version)
+                      ) > -1
+                    );
+                  });
 
-                if (
-                  attributes.findIndex(
-                    (attribute) => attribute.toLowerCase().trim() === "deutsch"
-                  ) > -1
-                ) {
-                  versions.push("df");
+                  if (
+                    attributes.findIndex(
+                      (attribute) => attribute.toLowerCase().trim() === "deutsch"
+                    ) > -1
+                  ) {
+                    versions.push("df");
+                  }
                 }
 
                 const times = await Promise.all(
@@ -90,7 +102,7 @@ const crawler = new PlaywrightCrawler({
             );
           }
 
-          console.log(when);
+          // console.log(when);
 
           return {
             day,
