@@ -13,6 +13,8 @@
         "test": "echo \"Error: oops, the actor has no tests yet, sad!\" && exit 1"
     },
     "author": "Hanie",
-    "license": "ISC"
+    "license": "ISC",
+    "devDependencies": {
+        "typescript": "^5.4.3"
+    }
 }
-
