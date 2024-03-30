@@ -6,4 +6,4 @@ node_modules
 apify_storage
 crawlee_storage
 storage
-src/crawlers/*.js
+src/crawlers/**/*.js
