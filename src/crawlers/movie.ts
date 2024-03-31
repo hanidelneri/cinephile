@@ -1,6 +1,7 @@
 export type movie = {
   title: string;
   description: string;
+  genre: string;
   cast: string | null;
   director: string | null;
   showTimes: showTime[];

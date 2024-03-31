@@ -10,6 +10,8 @@ const DESCRIPTION_NODE_SELECTOR = DATA_NODE_SELECTOR + " > :first-child";
 const METADATA_NODE_SELECTOR = DATA_NODE_SELECTOR + "> .MuiGrid-root.MuiGrid-container";
 const SHOW_TIME_NODE_SELECTOR =
   DATA_NODE_SELECTOR + " > :last-child > :last-child > .MuiBox-root > .MuiBox-root";
+const HEADER_SELECTOR =
+  ".LayoutWrapper_children  > .MuiBox-root > .MuiBox-root .MuiGrid-root.MuiGrid-container";
 
 export class YorckScraper {
   private page: Page;
@@ -21,6 +23,7 @@ export class YorckScraper {
     return {
       title: await this.getTitle(),
       description: await this.getDescription(),
+      genre: await this.getGenre(),
       cast: metadata["Cast"],
       director: metadata["Director"],
       showTimes: await this.getShowTimes(),
@@ -93,5 +96,15 @@ export class YorckScraper {
         })
       )
     ).flat();
+  }
+
+  private async getGenre(): Promise<string> {
+    const genre = await this.page
+      .locator(HEADER_SELECTOR)
+      .locator(".MuiTypography-root.MuiTypography-label")
+      .first()
+      .textContent();
+
+    return genre ? genre : "";
   }
 }

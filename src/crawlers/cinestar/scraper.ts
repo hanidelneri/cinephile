@@ -25,6 +25,7 @@ export class CinestarScraper {
     return {
       title: metdata["Originaltitel"] ? metdata["Originaltitel"] : await this.getTitle(),
       description: await this.getDescription(),
+      genre: await this.getGenre(),
       cast: cast["Cast"],
       director: cast["Regie"],
       showTimes: await this.getShowTimes(),
@@ -155,6 +156,11 @@ export class CinestarScraper {
     if (theater !== undefined) {
       return URL_TO_THEATER_MAP[theater] || "";
     }
+    return "";
+  }
+
+  private async getGenre(): Promise<string> {
+    //is not present in the movie detail page
     return "";
   }
 }
