@@ -28,6 +28,7 @@ export class CinestarScraper {
       genre: await this.getGenre(),
       cast: cast["Cast"],
       director: cast["Regie"],
+      duration: await this.getDuration(),
       showTimes: await this.getShowTimes(),
     };
   }
@@ -162,5 +163,21 @@ export class CinestarScraper {
   private async getGenre(): Promise<string> {
     //is not present in the movie detail page
     return "";
+  }
+
+  private async getDuration(): Promise<string> {
+    // const duration =
+    const duration = (
+      await this.page
+        .locator(".intro-data")
+        .locator(".attributes span")
+        .filter({ hasText: new RegExp("\\b(?:Filmlänge)\\b") })
+        .first()
+        .textContent()
+    )
+      ?.match(/\d/g)
+      ?.join("");
+
+    return duration ? duration : "";
   }
 }

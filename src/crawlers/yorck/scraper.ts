@@ -26,6 +26,7 @@ export class YorckScraper {
       genre: await this.getGenre(),
       cast: metadata["Cast"],
       director: metadata["Director"],
+      duration: await this.getDuration(),
       showTimes: await this.getShowTimes(),
     };
   }
@@ -106,5 +107,20 @@ export class YorckScraper {
       .textContent();
 
     return genre ? genre : "";
+  }
+
+  private async getDuration(): Promise<string> {
+    const duration = (
+      await this.page
+        .locator(HEADER_SELECTOR)
+        .locator(".MuiTypography-root.MuiTypography-label")
+        .filter({ hasText: new RegExp("\\b(?:min)\\b") })
+        .first()
+        .textContent()
+    )
+      ?.match(/\d/g)
+      ?.join("");
+
+    return duration ? duration : "";
   }
 }

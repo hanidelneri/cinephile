@@ -4,6 +4,7 @@ export type movie = {
   genre: string;
   cast: string | null;
   director: string | null;
+  duration: string;
   showTimes: showTime[];
 };
 
