@@ -6,6 +6,7 @@ export type movie = {
   director: string | null;
   duration: string;
   showTimes: showTime[];
+  images: string[];
 };
 
 export type dictionary = {

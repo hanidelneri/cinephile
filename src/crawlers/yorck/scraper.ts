@@ -26,6 +26,7 @@ export class YorckScraper {
       genre: await this.getGenre(),
       cast: metadata["Cast"],
       director: metadata["Director"],
+      images: await this.getImages(),
       duration: await this.getDuration(),
       showTimes: await this.getShowTimes(),
     };
@@ -122,5 +123,16 @@ export class YorckScraper {
       ?.join("");
 
     return duration ? duration : "";
+  }
+
+  private async getImages(): Promise<string[]> {
+    const images: string[] = [];
+    (await this.page.locator(".image-gallery-slides img").all()).forEach(async (locator) => {
+      const src = await locator.getAttribute("src");
+      if (src) {
+        images.push("https:" + src);
+      }
+    });
+    return images;
   }
 }

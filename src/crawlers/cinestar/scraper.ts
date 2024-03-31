@@ -28,6 +28,7 @@ export class CinestarScraper {
       genre: await this.getGenre(),
       cast: cast["Cast"],
       director: cast["Regie"],
+      images: await this.getImages(),
       duration: await this.getDuration(),
       showTimes: await this.getShowTimes(),
     };
@@ -179,5 +180,17 @@ export class CinestarScraper {
       ?.join("");
 
     return duration ? duration : "";
+  }
+
+  private async getImages(): Promise<string[]> {
+    const images: string[] = [];
+    (await this.page.locator(".gallery img").all()).forEach(async (locator) => {
+      const src = await locator.getAttribute("src");
+      if (src) {
+        images.push(src);
+      }
+    });
+
+    return images;
   }
 }
