@@ -31,6 +31,7 @@ export class CinestarScraper {
       images: await this.getImages(),
       duration: await this.getDuration(),
       showTimes: await this.getShowTimes(),
+      url: this.page.url(),
     };
   }
 

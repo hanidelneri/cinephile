@@ -7,6 +7,7 @@ export type movie = {
   duration: string;
   showTimes: showTime[];
   images: string[];
+  url: string;
 };
 
 export type dictionary = {
