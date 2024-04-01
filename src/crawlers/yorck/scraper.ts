@@ -1,4 +1,4 @@
-import { Page } from "playwright";
+import { Locator, Page } from "playwright";
 import { dictionary, showTime, movie } from "../movie.js";
 
 const LAYOUT_WRAPPER_SELECTOR = ".LayoutWrapper_children";
@@ -83,11 +83,7 @@ export class YorckScraper {
             ).map(async (locator) => ({
               theater,
               screenType: "2D",
-              time:
-                (await locator
-                  .locator(".MuiTypography-listingItem")
-                  .locator("nth=0")
-                  .textContent()) || "",
+              time: await this.getDateTime(locator),
               versions: [
                 (await locator
                   .locator(".MuiTypography-listingItem")
@@ -135,5 +131,13 @@ export class YorckScraper {
       }
     });
     return images;
+  }
+
+  private async getDateTime(locator: Locator) {
+    const date = new URLSearchParams(this.page.url()).get("date");
+    const time =
+      (await locator.locator(".MuiTypography-listingItem").locator("nth=0").textContent()) || "";
+
+    return date + "T" + time + ":00+02:00";
   }
 }
