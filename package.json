@@ -8,8 +8,10 @@
         "playwright": "*"
     },
     "scripts": {
-        "crawl:yorck": "npx tsc && node src/crawlers/yorck/movie/crawler.js",
-        "crawl:cinestar": "npx tsc && node src/crawlers/cinestar/movie/cr`awler.js",
+        "crawl:yorck:movie": "npx tsc && node src/crawlers/yorck/movie/crawler.js ",
+        "crawl:yorck:cinema":"npx tsc && node src/crawlers/yorck/cinema/crawler.js ",
+        "crawl:cinestar:movie": "npx tsc && node src/crawlers/cinestar/movie/crawler.js",
+        "crawl:cinestar:cinema": "npx tsc && node src/crawlers/cinestar/cinema/crawler.js",
         "test": "echo \"Error: oops, the actor has no tests yet, sad!\" && exit 1"
     },
     "author": "Hanie",

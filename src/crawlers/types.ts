@@ -20,3 +20,9 @@ export type showTime = {
   versions: string[];
   time: string;
 };
+
+export type cinema = {
+  name: string;
+  address: string;
+  url: string;
+};
