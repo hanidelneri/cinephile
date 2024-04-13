@@ -1,22 +1,26 @@
 {
     "name": "cinephile",
     "version": "0.0.1",
-    "type": "module",
     "description": "This is an example of a Crawlee project.",
     "dependencies": {
+        "@prisma/client": "^5.12.1",
         "crawlee": "^3.0.0",
         "playwright": "*"
     },
     "scripts": {
-        "crawl:yorck:movie": "npx tsc && node src/crawlers/yorck/movie/crawler.js ",
-        "crawl:yorck:cinema":"npx tsc && node src/crawlers/yorck/cinema/crawler.js ",
-        "crawl:cinestar:movie": "npx tsc && node src/crawlers/cinestar/movie/crawler.js",
-        "crawl:cinestar:cinema": "npx tsc && node src/crawlers/cinestar/cinema/crawler.js",
+        "crawl:yorck:movie": "node --loader ts-node/esm src/crawlers/yorck/movie/crawler.ts",
+        "crawl:yorck:cinema": "node --loader ts-node/esm src/crawlers/yorck/cinema/crawler.ts",
+        "crawl:cinestar:movie": "node --loader ts-node/esm src/crawlers/cinestar/movie/crawler.ts",
+        "crawl:cinestar:cinema": "node --loader ts-node/esm src/crawlers/cinestar/cinema/crawler.ts",
         "test": "echo \"Error: oops, the actor has no tests yet, sad!\" && exit 1"
     },
+    "type": "module",
     "author": "Hanie",
     "license": "ISC",
     "devDependencies": {
-        "typescript": "^5.4.3"
+        "@types/node": "^20.12.5",
+        "prisma": "^5.12.1",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.4.4"
     }
 }
