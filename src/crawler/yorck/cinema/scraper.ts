@@ -1,5 +1,5 @@
 import { Page } from "playwright";
-import { cinema } from "../../types.js";
+import { cinema } from "../../../types.js";
 
 export class Scraper {
   private page: Page;

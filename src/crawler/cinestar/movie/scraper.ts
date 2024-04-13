@@ -1,5 +1,5 @@
 import { Locator, Page } from "playwright";
-import { movie, dictionary, showTime } from "../../types.js";
+import { movie, dictionary, showTime } from "../../../types.js";
 
 const URL_TO_THEATER_MAP: dictionary = {
   "kino-berlin-treptower-park": "CineStar Berlin-Treptow",
