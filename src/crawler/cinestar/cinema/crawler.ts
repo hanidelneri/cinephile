@@ -1,13 +1,15 @@
 import { PlaywrightCrawler } from "crawlee";
 import { Scraper } from "./scraper.js";
+import { CinemaRepository } from "../../../repository/cinema.js";
 
 const MOVIE_GUIDE_SELECTOR = "#cinema-infos-main";
 
 const crawler = new PlaywrightCrawler({
   async requestHandler({ page, pushData }) {
+    const repository = new CinemaRepository();
     await page.waitForSelector(MOVIE_GUIDE_SELECTOR);
     const cinema = await new Scraper(page).scrape();
-    pushData(cinema, cinema.name);
+    await repository.createOrUpdateCinema(cinema);
   },
 });
 

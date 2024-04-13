@@ -1,5 +1,5 @@
 import { Locator, Page } from "playwright";
-import { dictionary, showTime, movie } from "../../types.js";
+import { dictionary, showTime, movie } from "../../../types.js";
 
 const LAYOUT_WRAPPER_SELECTOR = ".LayoutWrapper_children";
 
