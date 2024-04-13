@@ -8,10 +8,10 @@
         "playwright": "*"
     },
     "scripts": {
-        "crawl:yorck:movie": "node --loader ts-node/esm src/crawlers/yorck/movie/crawler.ts",
-        "crawl:yorck:cinema": "node --loader ts-node/esm src/crawlers/yorck/cinema/crawler.ts",
-        "crawl:cinestar:movie": "node --loader ts-node/esm src/crawlers/cinestar/movie/crawler.ts",
-        "crawl:cinestar:cinema": "node --loader ts-node/esm src/crawlers/cinestar/cinema/crawler.ts",
+        "crawl:yorck:movie": "node --loader ts-node/esm src/crawler/yorck/movie/crawler.ts",
+        "crawl:yorck:cinema": "node --loader ts-node/esm src/crawler/yorck/cinema/crawler.ts",
+        "crawl:cinestar:movie": "node --loader ts-node/esm src/crawler/cinestar/movie/crawler.ts",
+        "crawl:cinestar:cinema": "node --loader ts-node/esm src/crawler/cinestar/cinema/crawler.ts",
         "test": "echo \"Error: oops, the actor has no tests yet, sad!\" && exit 1"
     },
     "type": "module",
