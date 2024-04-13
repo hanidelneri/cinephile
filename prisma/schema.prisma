@@ -19,3 +19,12 @@ model cinema {
   address String @default("")
   url String
 }
+
+model movie {
+  id Int @id @default(autoincrement())
+  title String @unique
+  description String
+  duration Int
+  images String[]
+  links String []
+}
