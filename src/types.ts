@@ -19,6 +19,7 @@ export type showTime = {
   screenType: string;
   versions: string[];
   time: string;
+  date: string;
 };
 
 export type cinema = {

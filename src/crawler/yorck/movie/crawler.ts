@@ -13,7 +13,8 @@ const crawler = new PlaywrightCrawler({
     if (request.label === MOVIE_DETAIL_PAGE) {
       await page.waitForSelector(LAYOUT_WRAPPER_SELECTOR);
       const movie = await new YorckScraper(page).scrape();
-      await repository.createMovie(movie);
+      // await repository.createMovie(movie);
+      await pushData(movie, movie.title);
     } else {
       await page.waitForSelector(MOVIE_DETAIL_PAGE_LINK_SELECTOR);
       await enqueueLinks({

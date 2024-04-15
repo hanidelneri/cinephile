@@ -26,7 +26,7 @@ export class CinestarScraper {
       title: metdata["Originaltitel"] ? metdata["Originaltitel"] : await this.getTitle(),
       description: await this.getDescription(),
       genre: await this.getGenre(),
-      cast: this.convertStringToArray(cast["Cast"],','),
+      cast: this.convertStringToArray(cast["Cast"], ","),
       director: cast["Regie"],
       images: await this.getImages(),
       duration: await this.getDuration(),
@@ -114,9 +114,9 @@ export class CinestarScraper {
       (
         await locator.locator(".times").locator("time").all()
       ).map(async (locator) => {
-        const time = await locator.getAttribute("datetime");
         return {
-          time: time ? time : "",
+          time: await this.getTime(locator),
+          date: await this.getDate(locator),
           theater: this.getTheater(),
           screenType,
           versions,
@@ -195,12 +195,41 @@ export class CinestarScraper {
     return images;
   }
 
-  private convertStringToArray(value: string|null, separator: string): string[]
-  {
-    if(!value) {
-      return []
+  private convertStringToArray(value: string | null, separator: string): string[] {
+    if (!value) {
+      return [];
     }
 
-    return value.split(separator).map(part => part.trim()).filter(part => part);
+    return value
+      .split(separator)
+      .map((part) => part.trim())
+      .filter((part) => part);
+  }
+
+  private async getDate(locator: Locator): Promise<string> {
+    const dateTime = await locator.getAttribute("datetime");
+    if (!dateTime) {
+      return "";
+    }
+
+    const dateObj = new Date(dateTime);
+    const year = dateObj.getFullYear();
+    const month = dateObj.getMonth() + 1;
+    const day = dateObj.getDay();
+
+    return year + "-" + month + "-" + day;
+  }
+
+  private async getTime(locator: Locator): Promise<string> {
+    const dateTime = await locator.getAttribute("datetime");
+    if (!dateTime) {
+      return "";
+    }
+
+    const dateObj = new Date(dateTime);
+    const hours = dateObj.getHours();
+    const minutes = dateObj.getMinutes();
+
+    return hours + ":" + minutes;
   }
 }
