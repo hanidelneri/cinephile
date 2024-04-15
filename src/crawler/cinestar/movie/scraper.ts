@@ -162,9 +162,9 @@ export class CinestarScraper {
     return "";
   }
 
-  private async getGenre(): Promise<string> {
+  private async getGenre(): Promise<string[]> {
     //is not present in the movie detail page
-    return "";
+    return [];
   }
 
   private async getDuration(): Promise<string> {

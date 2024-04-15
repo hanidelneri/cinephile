@@ -97,14 +97,21 @@ export class YorckScraper {
     ).flat();
   }
 
-  private async getGenre(): Promise<string> {
+  private async getGenre(): Promise<string[]> {
     const genre = await this.page
       .locator(HEADER_SELECTOR)
       .locator(".MuiTypography-root.MuiTypography-label")
       .first()
       .textContent();
 
-    return genre ? genre : "";
+    if (!genre) {
+      return [];
+    }
+    return genre
+      .replace(/\./g, "")
+      .trim()
+      .split(",")
+      .map((genre) => genre.trim());
   }
 
   private async getDuration(): Promise<string> {
