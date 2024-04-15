@@ -12,19 +12,76 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
- 
+
 model cinema {
-  id  Int @id @default(autoincrement())
-  name String  @unique
-  address String @default("")
-  url String
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  address   String   @default("")
+  url       String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model movie {
-  id Int @id @default(autoincrement())
-  title String @unique
+  id          Int            @id @default(autoincrement())
+  title       String         @unique
   description String
-  duration Int
-  images String[]
-  links String []
+  duration    Int
+  images      String[]
+  links       String[]
+  movie_genre movie_genre[]
+  cast        movie_people[]
+  createdAt   DateTime       @default(now())
+  updatedAT   DateTime       @updatedAt
+  // director movie_people @relation(name: "director")
+  show_time   show_time[]
+}
+
+model show_time {
+  id        Int      @id @default(autoincrement())
+  movie     movie    @relation(fields: [movieId], references: [id])
+  movieId   Int
+  datetime  DateTime
+  createdAt DateTime @default(now())
+  updatedAT DateTime @updatedAt
+}
+
+model movie_genre {
+  id        Int      @id @default(autoincrement())
+  movie     movie    @relation(fields: [movieId], references: [id])
+  movieId   Int
+  createdAt DateTime @default(now())
+  updatedAT DateTime @updatedAt
+}
+
+model movie_people {
+  id        Int      @id @default(autoincrement())
+  movie     movie    @relation(fields: [movieId], references: [id])
+  people    people   @relation(fields: [peopleId], references: [id])
+  movieId   Int
+  peopleId  Int
+  role      role
+  createdAt DateTime @default(now())
+  updatedAT DateTime @updatedAt
+}
+
+model genre {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAT DateTime @updatedAt
+}
+
+model people {
+  id           Int            @id @default(autoincrement())
+  first_name   String
+  last_name    String
+  movie_people movie_people[]
+  createdAt    DateTime       @default(now())
+  updatedAT    DateTime       @updatedAt
+}
+
+enum role {
+  cast
+  director
 }
