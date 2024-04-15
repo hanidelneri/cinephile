@@ -10,3 +10,4 @@ You can find more examples and documentation at the following links:
 
 - npx prisma generate dev
 - npx prisma studio
+- npx prisma format
