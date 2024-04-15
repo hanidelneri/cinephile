@@ -2,7 +2,7 @@ export type movie = {
   title: string;
   description: string;
   genre: string[];
-  cast: string | null;
+  cast: string[];
   director: string | null;
   duration: string;
   showTimes: showTime[];

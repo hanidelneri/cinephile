@@ -24,7 +24,7 @@ export class YorckScraper {
       title: await this.getTitle(),
       description: await this.getDescription(),
       genre: await this.getGenre(),
-      cast: metadata["Cast"],
+      cast: this.getCastFromMetaData(metadata),
       director: metadata["Director"],
       images: await this.getImages(),
       duration: await this.getDuration(),
@@ -60,6 +60,20 @@ export class YorckScraper {
       metadata[key] = values[index];
     });
     return metadata;
+  }
+
+  private getCastFromMetaData(metadata: dictionary): string[] {
+    const cast = metadata["Cast"];
+    if (!cast) {
+      return [];
+    }
+
+    return cast
+      .replace(/\./g, "")
+      .trim()
+      .split(",")
+      .map((cast) => cast.trim())
+      .filter((cast) => cast);
   }
 
   private async getShowTimes(): Promise<showTime[]> {

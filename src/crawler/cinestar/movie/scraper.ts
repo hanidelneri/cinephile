@@ -26,7 +26,7 @@ export class CinestarScraper {
       title: metdata["Originaltitel"] ? metdata["Originaltitel"] : await this.getTitle(),
       description: await this.getDescription(),
       genre: await this.getGenre(),
-      cast: cast["Cast"],
+      cast: this.convertStringToArray(cast["Cast"],','),
       director: cast["Regie"],
       images: await this.getImages(),
       duration: await this.getDuration(),
@@ -193,5 +193,14 @@ export class CinestarScraper {
     });
 
     return images;
+  }
+
+  private convertStringToArray(value: string|null, separator: string): string[]
+  {
+    if(!value) {
+      return []
+    }
+
+    return value.split(separator).map(part => part.trim()).filter(part => part);
   }
 }
