@@ -19,7 +19,7 @@ model cinema {
   address   String   @default("")
   url       String
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @updatedAt @default(now())
 }
 
 model movie {
@@ -32,7 +32,7 @@ model movie {
   movie_genre movie_genre[]
   cast        movie_people[]
   createdAt   DateTime       @default(now())
-  updatedAT   DateTime       @updatedAt
+  updatedAT   DateTime       @updatedAt @default(now())
   // director movie_people @relation(name: "director")
   show_time   show_time[]
 }
@@ -50,6 +50,8 @@ model movie_genre {
   id        Int      @id @default(autoincrement())
   movie     movie    @relation(fields: [movieId], references: [id])
   movieId   Int
+  genre     genre    @relation(fields: [genreId], references: [id])
+  genreId   Int
   createdAt DateTime @default(now())
   updatedAT DateTime @updatedAt
 }
@@ -66,10 +68,11 @@ model movie_people {
 }
 
 model genre {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  createdAt DateTime @default(now())
-  updatedAT DateTime @updatedAt
+  id          Int           @id @default(autoincrement())
+  name        String        @unique
+  createdAt   DateTime      @default(now())
+  updatedAT   DateTime      @updatedAt
+  movie_genre movie_genre[]
 }
 
 model people {
@@ -79,6 +82,7 @@ model people {
   movie_people movie_people[]
   createdAt    DateTime       @default(now())
   updatedAT    DateTime       @updatedAt
+  @@unique([first_name, last_name])
 }
 
 enum role {
