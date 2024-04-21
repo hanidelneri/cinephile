@@ -1,5 +1,6 @@
 import { PlaywrightCrawler } from "crawlee";
 import { CinestarScraper } from "./scraper.js";
+import { MovieRepository } from "../../../repository/movie.js";
 
 const MOVIE_GUIDE_SELECTOR = ".MovieGuideView";
 const SHOW_TILE_LINK_SELECTOR = MOVIE_GUIDE_SELECTOR + " .ShowTile a:first-child";
@@ -16,7 +17,7 @@ const crawler = new PlaywrightCrawler({
       });
     } else {
       const movie = await new CinestarScraper(page).scrape();
-      pushData(movie, movie.title);
+      new MovieRepository().populateShowTimes(movie);
     }
   },
 });
