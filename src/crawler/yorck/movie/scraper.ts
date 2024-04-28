@@ -97,8 +97,7 @@ export class YorckScraper {
             ).map(async (locator) => ({
               theater,
               screenType: "2D",
-              time: await this.getTime(locator),
-              date: this.getDate(),
+              datetime: await this.getDateTime(locator),
               versions: [
                 (await locator
                   .locator(".MuiTypography-listingItem")
@@ -155,13 +154,11 @@ export class YorckScraper {
     return images;
   }
 
-  private getDate(): string {
-    return new URLSearchParams(this.page.url()).get("date") || "";
-  }
+  private async getDateTime(locator: Locator): Promise<string> {
+    const date = new URLSearchParams(this.page.url()).get("date");
+    const time =
+      (await locator.locator(".MuiTypography-listingItem").locator("nth=0").textContent()) || "";
 
-  private async getTime(locator: Locator): Promise<string> {
-    return (
-      (await locator.locator(".MuiTypography-listingItem").locator("nth=0").textContent()) || ""
-    );
+    return date + "T" + time + ":00+02:00";
   }
 }

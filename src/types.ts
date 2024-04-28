@@ -18,8 +18,7 @@ export type showTime = {
   theater: string;
   screenType: string;
   versions: string[];
-  time: string;
-  date: string;
+  datetime: string;
 };
 
 export type cinema = {

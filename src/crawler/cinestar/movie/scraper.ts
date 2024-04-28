@@ -114,9 +114,9 @@ export class CinestarScraper {
       (
         await locator.locator(".times").locator("time").all()
       ).map(async (locator) => {
+        const time = await locator.getAttribute("datetime");
         return {
-          time: await this.getTime(locator),
-          date: await this.getDate(locator),
+          datetime: time ? time : "",
           theater: this.getTheater(),
           screenType,
           versions,
@@ -204,32 +204,5 @@ export class CinestarScraper {
       .split(separator)
       .map((part) => part.trim())
       .filter((part) => part);
-  }
-
-  private async getDate(locator: Locator): Promise<string> {
-    const dateTime = await locator.getAttribute("datetime");
-    if (!dateTime) {
-      return "";
-    }
-
-    const dateObj = new Date(dateTime);
-    const year = dateObj.getFullYear();
-    const month = dateObj.getMonth() + 1;
-    const day = dateObj.getDay();
-
-    return year + "-" + month + "-" + day;
-  }
-
-  private async getTime(locator: Locator): Promise<string> {
-    const dateTime = await locator.getAttribute("datetime");
-    if (!dateTime) {
-      return "";
-    }
-
-    const dateObj = new Date(dateTime);
-    const hours = dateObj.getHours();
-    const minutes = dateObj.getMinutes();
-
-    return hours + ":" + minutes;
   }
 }
