@@ -1,6 +1,21 @@
-import { PrismaClient } from "@prisma/client";
-import { movie } from "../types.js";
-import { firefox } from "playwright";
+import { PrismaClient, role } from "@prisma/client";
+import { movie, showTime } from "../types.js";
+
+const INCLUDE_GENRE = {
+  movie_genre: {
+    include: {
+      genre: true,
+    },
+  },
+};
+
+const INCLUDE_CAST = {
+  cast: {
+    include: {
+      people: true,
+    },
+  },
+};
 
 export class MovieRepository {
   prisma = new PrismaClient();
@@ -22,16 +37,8 @@ export class MovieRepository {
         title: title,
       },
       include: {
-        movie_genre: {
-          include: {
-            genre: true,
-          },
-        },
-        cast: {
-          include: {
-            people: true,
-          },
-        },
+        ...INCLUDE_GENRE,
+        ...INCLUDE_CAST,
         show_time: true,
       },
     });
@@ -39,18 +46,6 @@ export class MovieRepository {
 
   private async createNewMovieAndShowTime(movie: movie): Promise<void> {
     await this.prisma.movie.create({
-      include: {
-        movie_genre: {
-          include: {
-            genre: true,
-          },
-        },
-        cast: {
-          include: {
-            people: true,
-          },
-        },
-      },
       data: {
         title: movie.title,
         description: movie.description,
@@ -58,48 +53,22 @@ export class MovieRepository {
         images: movie.images,
         links: [movie.url],
         movie_genre: {
-          create: movie.genre.map((genre) => ({
-            genre: {
-              connectOrCreate: {
-                create: {
-                  name: genre,
-                },
-                where: {
-                  name: genre,
-                },
-              },
-            },
-          })),
+          create: movie.genre.map(this.createOrConnectGenre),
         },
         cast: {
-          create: movie.cast.map((cast) => {
-            const [firstName, lastName] = cast.split(" ");
-            return {
-              role: "cast",
-              people: {
-                connectOrCreate: {
-                  create: {
-                    first_name: firstName,
-                    last_name: lastName || "",
-                  },
-                  where: {
-                    first_name_last_name: {
-                      first_name: firstName,
-                      last_name: lastName || "",
-                    },
-                  },
-                },
-              },
-            };
-          }),
+          create: movie.cast.map(this.createOrConnectCast),
         },
         show_time: {
           create: movie.showTimes.map((showTime) => {
             return {
-              datetime: new Date(this.getIsoDate(showTime.date, showTime.time)),
+              datetime: new Date(showTime.datetime),
             };
           }),
         },
+      },
+      include: {
+        ...INCLUDE_GENRE,
+        ...INCLUDE_CAST,
       },
     });
   }
@@ -114,7 +83,6 @@ export class MovieRepository {
       }
 
       const newImages = movie.images.filter((image) => movieEntity.images.indexOf(image) < 0);
-      updatedFields.images = [...movieEntity.images, ...newImages];
 
       const newGenres = movie.genre.filter((genre) =>
         movieEntity.movie_genre.find((genreEntity) => genreEntity.genre.name === genre)
@@ -131,8 +99,7 @@ export class MovieRepository {
 
       const newShowTimes = movie.showTimes.filter((showTime) => {
         movieEntity.show_time.find(
-          (showTimeEntity) =>
-            showTimeEntity.datetime.toISOString() === this.getIsoDate(showTime.date, showTime.time)
+          (showTimeEntity) => showTimeEntity.datetime.toISOString() === showTime.datetime
         );
       });
 
@@ -142,75 +109,67 @@ export class MovieRepository {
         },
         data: {
           ...updatedFields,
+          images: {
+            push: newImages,
+          },
           movie_genre: {
-            create: newGenres.map((genre) => ({
-              genre: {
-                connectOrCreate: {
-                  where: {
-                    name: genre,
-                  },
-                  create: {
-                    name: genre,
-                  },
-                },
-              },
-            })),
+            create: newGenres.map(this.createOrConnectGenre),
           },
           cast: {
-            create: newCast.map((cast) => {
-              const [firstName, lastName] = cast.split(" ");
-
-              return {
-                people: {
-                  connectOrCreate: {
-                    where: {
-                      first_name_last_name: {
-                        first_name: firstName,
-                        last_name: lastName,
-                      },
-                    },
-                    create: {
-                      first_name: firstName,
-                      last_name: lastName || "",
-                    },
-                  },
-                },
-                role: "cast",
-              };
-            }),
+            create: newCast.map(this.createOrConnectCast),
           },
           show_time: {
             createMany: {
-              data: newShowTimes.map((showTime) => ({
-                datetime: this.getIsoDate(showTime.date, showTime.time),
-              })),
+              data: newShowTimes.map(this.createShowTime),
             },
           },
         },
         include: {
-          movie_genre: {
-            include: {
-              genre: true,
-            },
-          },
-          cast: {
-            include: {
-              people: true,
-            },
-          },
+          ...INCLUDE_GENRE,
+          ...INCLUDE_CAST,
         },
       });
     }
   }
 
-  private getIsoDate(date: string, time: string): string {
-    const [year, month, day] = date.split("-");
-    const [hours, minutes] = time.split(":");
+  private createOrConnectGenre = (genre: string) => {
+    return {
+      genre: {
+        connectOrCreate: {
+          where: {
+            name: genre,
+          },
+          create: {
+            name: genre,
+          },
+        },
+      },
+    };
+  };
 
-    // Ensure month and day are zero-padded if they are single digits
-    const isoDate = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+  private createOrConnectCast = (cast: string) => {
+    const [firstName, lastName] = cast.split(" ");
 
-    // Concatenate date and time components in ISO-8601 format
-    return `${isoDate}T${hours}:${minutes}:00`;
-  }
+    return {
+      role: role.cast,
+      people: {
+        connectOrCreate: {
+          create: {
+            first_name: firstName,
+            last_name: lastName || "",
+          },
+          where: {
+            first_name_last_name: {
+              first_name: firstName,
+              last_name: lastName || "",
+            },
+          },
+        },
+      },
+    };
+  };
+
+  private createShowTime = (showTime: showTime) => ({
+    datetime: showTime.datetime,
+  });
 }
