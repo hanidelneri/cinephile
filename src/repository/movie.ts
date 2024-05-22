@@ -1,4 +1,9 @@
-import { PrismaClient, role } from "@prisma/client";
+import {
+  PrismaClient,
+  role,
+  screenType as screenTypeEnum,
+  version as versionEnum,
+} from "@prisma/client";
 import { movie, showTime } from "../types.js";
 
 const INCLUDE_GENRE = {
@@ -13,6 +18,14 @@ const INCLUDE_CAST = {
   cast: {
     include: {
       people: true,
+    },
+  },
+};
+
+const INCLUDE_CINEMA = {
+  show_time: {
+    include: {
+      cinema: true,
     },
   },
 };
@@ -59,16 +72,13 @@ export class MovieRepository {
           create: movie.cast.map(this.createOrConnectCast),
         },
         show_time: {
-          create: movie.showTimes.map((showTime) => {
-            return {
-              datetime: new Date(showTime.datetime),
-            };
-          }),
+          create: movie.showTimes.map(this.createShowTime),
         },
       },
       include: {
         ...INCLUDE_GENRE,
         ...INCLUDE_CAST,
+        ...INCLUDE_CINEMA,
       },
     });
   }
@@ -127,6 +137,7 @@ export class MovieRepository {
         include: {
           ...INCLUDE_GENRE,
           ...INCLUDE_CAST,
+          ...INCLUDE_CINEMA,
         },
       });
     }
@@ -171,5 +182,30 @@ export class MovieRepository {
 
   private createShowTime = (showTime: showTime) => ({
     datetime: showTime.datetime,
+    screenType: this.getScreenType(showTime.screenType),
+    versions: showTime.versions.map(this.getVersion),
+    cinema: {
+      connect: {
+        name: showTime.theater,
+      },
+    },
   });
+
+  private getScreenType = (screenType: string): screenTypeEnum => {
+    if (screenType == "3D") return screenTypeEnum.threeD;
+    return screenTypeEnum.twoD;
+  };
+
+  private getVersion = (version: string): versionEnum => {
+    switch (version) {
+      case "df":
+        return versionEnum.df;
+      case "omu":
+        return versionEnum.omu;
+      case "omeu":
+        return versionEnum.omeu;
+      default:
+        return versionEnum.ov;
+    }
+  };
 }

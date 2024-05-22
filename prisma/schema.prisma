@@ -14,12 +14,13 @@ datasource db {
 }
 
 model cinema {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  address   String   @default("")
+  id        Int         @id @default(autoincrement())
+  name      String      @unique
+  address   String      @default("")
   url       String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt @default(now())
+  show_time show_time[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @default(now()) @updatedAt
 }
 
 model movie {
@@ -32,18 +33,22 @@ model movie {
   movie_genre movie_genre[]
   cast        movie_people[]
   createdAt   DateTime       @default(now())
-  updatedAT   DateTime       @updatedAt @default(now())
+  updatedAT   DateTime       @default(now()) @updatedAt
   // director movie_people @relation(name: "director")
   show_time   show_time[]
 }
 
 model show_time {
-  id        Int      @id @default(autoincrement())
-  movie     movie    @relation(fields: [movieId], references: [id])
-  movieId   Int
-  datetime  DateTime
-  createdAt DateTime @default(now())
-  updatedAT DateTime @updatedAt
+  id         Int        @id @default(autoincrement())
+  movie      movie      @relation(fields: [movieId], references: [id])
+  movieId    Int
+  datetime   DateTime
+  screenType screenType @default(twoD)
+  versions   version[]
+  cinema     cinema     @relation(fields: [cinemaId], references: [id])
+  cinemaId   Int
+  createdAt  DateTime   @default(now())
+  updatedAT  DateTime   @updatedAt
 }
 
 model movie_genre {
@@ -82,10 +87,23 @@ model people {
   movie_people movie_people[]
   createdAt    DateTime       @default(now())
   updatedAT    DateTime       @updatedAt
+
   @@unique([first_name, last_name])
 }
 
 enum role {
   cast
   director
+}
+
+enum screenType {
+  twoD
+  threeD
+}
+
+enum version {
+  df
+  omu
+  omeu
+  ov
 }

@@ -2,11 +2,11 @@ import { Locator, Page } from "playwright";
 import { movie, dictionary, showTime } from "../../../types.js";
 
 const URL_TO_THEATER_MAP: dictionary = {
-  "kino-berlin-treptower-park": "CineStar Berlin-Treptow",
-  "kino-berlin-cubix-am-alexanderplatz": "CineStar Cubix",
-  "kino-berlin-hellersdorf": "CineStar Berlin-Hellersdorf",
-  "berlin-kino-in-der-kulturbrauerei": "Kino in der Kulturbrauerei",
-  "kino-berlin-tegel": "CineStar Berlin-Tegel",
+  "kino-berlin-treptower-park": "CineStar Berlin - Treptower Park",
+  "kino-berlin-cubix-am-alexanderplatz": "CineStar Berlin - CUBIX am Alexanderplatz",
+  "kino-berlin-hellersdorf": "CineStar Berlin - Hellersdorf",
+  "berlin-kino-in-der-kulturbrauerei": "Kino in der KulturBrauerei - Berlin",
+  "kino-berlin-tegel": "CineStar Berlin - Tegel",
 };
 
 const VERSIONS = ["ov", "omeu", "omu", "df"];
@@ -148,7 +148,7 @@ export class CinestarScraper {
         versions.push("df");
       }
 
-      return versions;
+      return versions.map((version) => version.toLowerCase());
     }
 
     return [];

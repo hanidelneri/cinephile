@@ -102,7 +102,7 @@ export class YorckScraper {
                 (await locator
                   .locator(".MuiTypography-listingItem")
                   .locator("nth=1")
-                  .textContent()) || "",
+                  .textContent()) || "".toLowerCase(),
               ],
             }))
           );
