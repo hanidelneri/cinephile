@@ -5,6 +5,7 @@ import {
   version as versionEnum,
 } from "@prisma/client";
 import { movie, showTime } from "../types.js";
+import prisma from "./client.js";
 
 const INCLUDE_GENRE = {
   movie_genre: {
@@ -31,8 +32,6 @@ const INCLUDE_CINEMA = {
 };
 
 export class MovieRepository {
-  prisma = new PrismaClient();
-
   public async populateShowTimes(movie: movie) {
     // inefficient, queries movie by title twice to fix a typescript issue
     const movieEntity = await this.findMovieByTitle(movie.title);
@@ -45,7 +44,7 @@ export class MovieRepository {
   }
 
   private async findMovieByTitle(title: string) {
-    return await this.prisma.movie.findFirst({
+    return await prisma.movie.findFirst({
       where: {
         title: title,
       },
@@ -58,7 +57,7 @@ export class MovieRepository {
   }
 
   private async createNewMovieAndShowTime(movie: movie): Promise<void> {
-    await this.prisma.movie.create({
+    await prisma.movie.create({
       data: {
         title: movie.title,
         description: movie.description,
@@ -94,8 +93,8 @@ export class MovieRepository {
 
       const newImages = movie.images.filter((image) => movieEntity.images.indexOf(image) < 0);
 
-      const newGenres = movie.genre.filter((genre) =>
-        !movieEntity.movie_genre.find((genreEntity) => genreEntity.genre.name === genre)
+      const newGenres = movie.genre.filter(
+        (genre) => !movieEntity.movie_genre.find((genreEntity) => genreEntity.genre.name === genre)
       );
 
       const newCast = movie.cast.filter(
@@ -111,7 +110,7 @@ export class MovieRepository {
         );
       });
 
-      await this.prisma.movie.update({
+      await prisma.movie.update({
         where: {
           id: movieEntity.id,
         },
