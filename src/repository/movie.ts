@@ -95,20 +95,18 @@ export class MovieRepository {
       const newImages = movie.images.filter((image) => movieEntity.images.indexOf(image) < 0);
 
       const newGenres = movie.genre.filter((genre) =>
-        movieEntity.movie_genre.find((genreEntity) => genreEntity.genre.name === genre)
+        !movieEntity.movie_genre.find((genreEntity) => genreEntity.genre.name === genre)
       );
 
-      const newCast = movie.cast.filter((cast) =>
-        movieEntity.cast.find((castEntity) => {
-          const [firstName, lastName] = cast.split(" ");
-          return (
-            castEntity.people.first_name === firstName && castEntity.people.last_name === lastName
-          );
-        })
+      const newCast = movie.cast.filter(
+        (cast) =>
+          !movieEntity.cast.find((castEntity) => {
+            return castEntity.people.name === cast;
+          })
       );
 
       const newShowTimes = movie.showTimes.filter((showTime) => {
-        movieEntity.show_time.find(
+        !movieEntity.show_time.find(
           (showTimeEntity) => showTimeEntity.datetime.toISOString() === showTime.datetime
         );
       });
@@ -159,21 +157,15 @@ export class MovieRepository {
   };
 
   private createOrConnectCast = (cast: string) => {
-    const [firstName, lastName] = cast.split(" ");
-
     return {
       role: role.cast,
       people: {
         connectOrCreate: {
           create: {
-            first_name: firstName,
-            last_name: lastName || "",
+            name: cast,
           },
           where: {
-            first_name_last_name: {
-              first_name: firstName,
-              last_name: lastName || "",
-            },
+            name: cast,
           },
         },
       },

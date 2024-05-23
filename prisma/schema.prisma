@@ -82,13 +82,10 @@ model genre {
 
 model people {
   id           Int            @id @default(autoincrement())
-  first_name   String
-  last_name    String
+  name         String         @unique
   movie_people movie_people[]
   createdAt    DateTime       @default(now())
   updatedAT    DateTime       @updatedAt
-
-  @@unique([first_name, last_name])
 }
 
 enum role {
