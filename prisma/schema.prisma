@@ -34,7 +34,6 @@ model movie {
   cast        movie_people[]
   createdAt   DateTime       @default(now())
   updatedAT   DateTime       @default(now()) @updatedAt
-  // director movie_people @relation(name: "director")
   show_time   show_time[]
 }
 

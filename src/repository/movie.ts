@@ -1,6 +1,5 @@
 import {
-  PrismaClient,
-  role,
+  role as roleEnum,
   screenType as screenTypeEnum,
   version as versionEnum,
 } from "@prisma/client";
@@ -68,7 +67,12 @@ export class MovieRepository {
           create: movie.genre.map(this.createOrConnectGenre),
         },
         cast: {
-          create: movie.cast.map(this.createOrConnectCast),
+          create: movie.director
+            ? [
+                ...movie.cast.map((cast) => this.createOrConnectCast(cast, roleEnum.cast)),
+                this.createOrConnectCast(movie.director, roleEnum.director),
+              ]
+            : movie.cast.map((cast) => this.createOrConnectCast(cast, roleEnum.cast)),
         },
         show_time: {
           create: movie.showTimes.map(this.createShowTime),
@@ -100,9 +104,11 @@ export class MovieRepository {
       const newCast = movie.cast.filter(
         (cast) =>
           !movieEntity.cast.find((castEntity) => {
-            return castEntity.people.name === cast;
+            return castEntity.people.name === cast && castEntity.role === roleEnum.cast;
           })
       );
+
+      const hasDirector = movieEntity.cast.find((cast) => cast.role === roleEnum.director);
 
       const newShowTimes = movie.showTimes.filter((showTime) => {
         !movieEntity.show_time.find(
@@ -123,7 +129,13 @@ export class MovieRepository {
             create: newGenres.map(this.createOrConnectGenre),
           },
           cast: {
-            create: newCast.map(this.createOrConnectCast),
+            create:
+              hasDirector || movie.director !== ""
+                ? [...newCast.map((cast) => this.createOrConnectCast(cast, roleEnum.cast))]
+                : [
+                    ...newCast.map((cast) => this.createOrConnectCast(cast, roleEnum.cast)),
+                    this.createOrConnectCast(movie.director, roleEnum.director),
+                  ],
           },
           show_time: {
             createMany: {
@@ -155,9 +167,9 @@ export class MovieRepository {
     };
   };
 
-  private createOrConnectCast = (cast: string) => {
+  private createOrConnectCast = (cast: string, role: roleEnum) => {
     return {
-      role: role.cast,
+      role: role,
       people: {
         connectOrCreate: {
           create: {
