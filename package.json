@@ -13,7 +13,7 @@
         "crawl:yorck:cinema": "node --loader ts-node/esm src/crawler/yorck/cinema/crawler.ts",
         "crawl:cinestar:movie": "node --loader ts-node/esm src/crawler/cinestar/movie/crawler.ts",
         "crawl:cinestar:cinema": "node --loader ts-node/esm src/crawler/cinestar/cinema/crawler.ts",
-        "server:start": "node --loader ts-node/esm src/server.ts",
+        "server:start": "nodemon",
         "test": "echo \"Error: oops, the actor has no tests yet, sad!\" && exit 1"
     },
     "type": "module",
@@ -22,6 +22,7 @@
     "devDependencies": {
         "@types/express": "^4.17.21",
         "@types/node": "^20.12.5",
+        "nodemon": "^3.1.1",
         "prisma": "^5.12.1",
         "ts-node": "^10.9.2",
         "typescript": "^5.4.4"
