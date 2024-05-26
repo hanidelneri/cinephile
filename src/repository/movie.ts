@@ -50,7 +50,7 @@ export class MovieRepository {
       include: {
         ...INCLUDE_GENRE,
         ...INCLUDE_CAST,
-        show_time: true,
+        ...INCLUDE_CINEMA,
       },
     });
   }
@@ -112,7 +112,9 @@ export class MovieRepository {
 
       const newShowTimes = movie.showTimes.filter((showTime) => {
         !movieEntity.show_time.find(
-          (showTimeEntity) => showTimeEntity.datetime.toISOString() === showTime.datetime
+          (showTimeEntity) =>
+            showTimeEntity.datetime.toISOString() === showTime.datetime &&
+            showTime.theater === showTimeEntity.cinema.name
         );
       });
 
